@@ -152,6 +152,8 @@ class BucketDatabase {
 						->getConnection( DB_PRIMARY )
 						->query( "GRANT ALL ON $escapedTableName TO $bucketDBuser;", $methodName );
 				}
+				// Identifiers in the statement are escaped by addIdentifierQuotes() as it is built.
+				// @phan-suppress-next-line SecurityCheck-SQLInjection
 				$dbw->query( $table['statement'], $methodName );
 			}
 

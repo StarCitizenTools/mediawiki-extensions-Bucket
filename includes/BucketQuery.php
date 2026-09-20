@@ -267,6 +267,8 @@ class BucketQuery {
 
 	public function getSelectQueryBuilder(): SelectQueryBuilder {
 		$dbw = BucketDatabase::getDB();
+		// Table names are escaped by tableName(); taint-check does not model that.
+		// @phan-suppress-next-line SecurityCheck-SQLInjection
 		$builder = $dbw->newSelectQueryBuilder()
 			->from( BucketDatabase::getBucketTableName( $this->getPrimaryBucket()->getName() ) )
 			->caller( __METHOD__ );
@@ -556,6 +558,8 @@ class SubqueryNode extends QueryNode {
 		$repeatedFieldTable = BucketDatabase::getSubTableName(
 			$selector->getBucketSchema()->getName(),
 			$selector->getFieldSchema()->getFieldName() );
+		// Table names are escaped by tableName(); taint-check does not model that.
+		// @phan-suppress-next-line SecurityCheck-SQLInjection
 		$subquery = $dbw->newSelectQueryBuilder()
 			->from( $repeatedFieldTable )
 			->select( [ '_page_id', '_index' ] )

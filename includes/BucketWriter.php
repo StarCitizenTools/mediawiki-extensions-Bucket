@@ -256,6 +256,8 @@ class BucketWriter {
 				$tables = BucketDatabase::getBucketSubTableNames( $baseName, $schemas[$baseName] );
 				$tables[] = BucketDatabase::getBucketTableName( $baseName );
 				foreach ( $tables as $name ) {
+					// Table names are escaped by tableName(); taint-check does not model that.
+					// @phan-suppress-next-line SecurityCheck-SQLInjection
 					$dbw->newDeleteQueryBuilder()
 						->deleteFrom( $name )
 						->where( [ '_page_id' => $pageId ] )

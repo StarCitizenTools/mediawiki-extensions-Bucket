@@ -24,8 +24,6 @@ $cfg['suppress_issue_types'] = array_merge(
 		'PhanTypeMismatchDimFetch',
 		'PhanTypeMismatchDimAssignment',
 
-		// TODO Figure out how we can re-enable this
-		'SecurityCheck-SQLInjection',
 	]
 );
 
