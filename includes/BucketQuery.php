@@ -591,7 +591,7 @@ class ComparisonConditionNode extends QueryNode {
 			&& $value !== null ) {
 			$value = strval( $value );
 		}
-		return $dbw->expr( $selector->getUnsafe(), $op, $value );
+		return $dbw->expr( $selector->getSafe( $dbw ), $op, $value );
 	}
 
 	public function getSelector(): Selector {
@@ -647,7 +647,13 @@ class FieldSelector extends Selector {
 	}
 
 	public function getSafe( IDatabase $dbw ): string {
-		return $dbw->addIdentifierQuotes( BucketDatabase::getBucketTableName( $this->schema->getName() ) )
+		if ( $this->subquery ) {
+			$table = BucketDatabase::getSubTableName(
+				$this->schema->getName(), $this->schemaField->getFieldName() );
+		} else {
+			$table = BucketDatabase::getBucketTableName( $this->schema->getName() );
+		}
+		return $dbw->addIdentifierQuotes( $table )
 			. '.' . $dbw->addIdentifierQuotes( $this->schemaField->getFieldName() );
 	}
 
@@ -706,7 +712,7 @@ class CategorySelector extends Selector {
 	}
 
 	public function getSelectSQL( IDatabase $dbw ): string {
-		return $dbw->expr( $this->getUnsafe(), '!=', null )->toSql( $dbw );
+		return $dbw->expr( $this->getSafe( $dbw ), '!=', null )->toSql( $dbw );
 	}
 }
 
